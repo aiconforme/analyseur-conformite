@@ -3,7 +3,7 @@ from langchain_openai import AzureChatOpenAI
 from dotenv import load_dotenv
 import os
 from reportlab.lib.pagesizes import A4
-from reportlab.platypus import SimpleDocTemplate, Paragraph, Spacer, PageBreak
+from reportlab.platypus import SimpleDocTemplate, Paragraph, Spacer
 from reportlab.lib.styles import getSampleStyleSheet
 from io import BytesIO
 import re
@@ -128,7 +128,7 @@ Si IA detectee, verifie:
 - Documentation necessaire
 - Obligations specifiques
 
-Si pas d'IA detectee, retourne exactement: "AI Act: Non applicable - Aucune IA detectee sur ce site."
+Si pas d'IA, retourne: "Non applicable - aucune IA detectee"
 
 Sois concis (max 150 mots)."""
 
@@ -192,7 +192,7 @@ IMPORTANT: Commence par "Score: XX/100" """
             st.subheader("AI Act")
             st.write(results['aiact'])
         
-        # Génération PDF AMÉLIORÉ
+        # Génération PDF
         st.markdown("---")
         
         buffer = BytesIO()
@@ -200,7 +200,7 @@ IMPORTANT: Commence par "Score: XX/100" """
         styles = getSampleStyleSheet()
         story = []
         
-        # Page 1 - En-tête et résumé
+        # Contenu PDF
         story.append(Paragraph("Rapport Conformite RGPD / AI Act", styles['Title']))
         story.append(Spacer(1, 20))
         story.append(Paragraph(f"<b>Site analyse:</b> {url}", styles['Normal']))
@@ -208,42 +208,16 @@ IMPORTANT: Commence par "Score: XX/100" """
         story.append(Paragraph(f"<b>Score global:</b> {score}/100", styles['Heading2']))
         story.append(Spacer(1, 20))
         
-        # Résumé exécutif
-        story.append(Paragraph("<b>Résumé exécutif:</b>", styles['Heading3']))
+        story.append(Paragraph("<b>Rapport:</b>", styles['Heading3']))
         story.append(Spacer(1, 8))
         rapport_clean = results['rapport'].replace('\n', '<br/>')
         story.append(Paragraph(rapport_clean, styles['Normal']))
         story.append(Spacer(1, 20))
         
-        # Nouvelle page pour RGPD
-        story.append(PageBreak())
-        story.append(Paragraph("<b>Analyse détaillée RGPD:</b>", styles['Heading2']))
-        story.append(Spacer(1, 12))
-        rgpd_clean = results['rgpd'].replace('\n', '<br/>')
+        story.append(Paragraph("<b>Details RGPD:</b>", styles['Heading3']))
+        story.append(Spacer(1, 8))
+        rgpd_clean = results['rgpd'].replace('\n', '<br/>')[:1500]
         story.append(Paragraph(rgpd_clean, styles['Normal']))
-        story.append(Spacer(1, 20))
-        
-        # Section AI Act (TOUJOURS incluse)
-        story.append(Paragraph("<b>Analyse AI Act:</b>", styles['Heading2']))
-        story.append(Spacer(1, 12))
-        aiact_clean = results['aiact'].replace('\n', '<br/>')
-        story.append(Paragraph(aiact_clean, styles['Normal']))
-        story.append(Spacer(1, 20))
-        
-        # Nouvelle page pour détails techniques
-        story.append(PageBreak())
-        story.append(Paragraph("<b>Annexe - Détails techniques:</b>", styles['Heading2']))
-        story.append(Spacer(1, 12))
-        story.append(Paragraph("<b>Structure du site:</b>", styles['Heading3']))
-        story.append(Spacer(1, 8))
-        crawl_clean = results['crawl'].replace('\n', '<br/>')
-        story.append(Paragraph(crawl_clean, styles['Normal']))
-        story.append(Spacer(1, 12))
-        
-        story.append(Paragraph("<b>Détection IA:</b>", styles['Heading3']))
-        story.append(Spacer(1, 8))
-        ia_clean = results['ia'].replace('\n', '<br/>')
-        story.append(Paragraph(ia_clean, styles['Normal']))
         
         doc.build(story)
         pdf_bytes = buffer.getvalue()
@@ -274,10 +248,10 @@ IMPORTANT: Commence par "Score: XX/100" """
                         <p>Vous trouverez le rapport detaille en piece jointe (PDF).</p>
                         <br>
                         <p>💎 <strong>Besoin d'IA personnalisee pour votre entreprise ?</strong></p>
-                        <p>Automatisez vos processus avec AI Conforme</p>
-                        <p><a href="https://aiconforme.com">En savoir plus →</a></p>
+                        <p>Automatisez vos processus avec IA Diamant</p>
+                        <p><a href="https://guillaumepicard.ca">Demander une demo gratuite →</a></p>
                         <br>
-                        <p>Cordialement,<br>L'equipe AI Conforme</p>
+                        <p>Cordialement,<br>L'equipe IA Diamant</p>
                     """,
                     "attachments": [{
                         "filename": "rapport_conformite.pdf",
@@ -347,4 +321,4 @@ with st.sidebar:
     """)
     
     st.markdown("---")
-    st.caption("Developpe avec ❤️ par AI Conforme")
+    st.caption("Developpe avec ❤️ par IA Diamant")
