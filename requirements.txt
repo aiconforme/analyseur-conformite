@@ -1,0 +1,9 @@
+# MVP Analyseur Conformité RGPD / AI Act
+# Décembre 2025 - Sans CrewAI
+
+streamlit==1.52.1
+python-dotenv==1.1.1
+langchain-openai==0.3.23
+openai==1.83.0
+reportlab==4.4.6
+resend==2.7.0
